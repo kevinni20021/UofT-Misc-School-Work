@@ -1,0 +1,49 @@
+gender,nationality,program_type,current_course_confidence_level,cgpa,financial_stress,source_of_financial_stress,source_of_income,house_expenditure,other_expenditure
+Male,Domestic Student,"Deregulated, and Part-Time Student",4,2.5 - 2.99,No,"I am not experiencing financial stress, ","Part-Time/Full-Time Job, Scholarships, Savings/Investments",0 - 499,less than 1000
+Male,Domestic Student,"Deregulated, and Full-Time Student",4,3.0 - 3.49,Yes,"Rent, Food","Family Support, Savings/Investments",500 - 999,less than 1000
+Male,International Student,"Regulated, and Full-Time Student",4,3.5 - 4.0,Yes,"Tuition/Education Expenses, Rent, Transportation",Family Support,1000 -1499,3000 - 3999
+Female,International Student,"Deregulated, and Full-Time Student",3,3.0 - 3.49,Yes,"Tuition/Education Expenses, Rent, Medical Expenses",Family Support,1000 -1499,2000 - 2999
+Female,International Student,"Regulated, and Full-Time Student",1,2.5 - 2.99,Yes,"Tuition/Education Expenses, Rent, Food, Transportation, Medical Expenses",Family Support,500 - 999,less than 1000
+Female,International Student,"Regulated, and Full-Time Student",3,less than 2.0,Yes,"Tuition/Education Expenses, Rent",Family Support,1500 - 1999,2000 - 2999
+Female,International Student,"Regulated, and Full-Time Student",4,2.5 - 2.99,Yes,"Tuition/Education Expenses, Rent, Transportation",Family Support,2500 - 2999,4000 or higher
+Male,International Student,"Regulated, and Full-Time Student",1,3.0 - 3.49,Yes,"Food, Transportation",Family Support,1000 -1499,1000 - 1999
+Male,International Student,"Regulated, and Full-Time Student",4,2.0 - 2.49,Yes,"Tuition/Education Expenses, Rent, Food, Transportation",Family Support,500 - 999,1000 - 1999
+Female,International Student,"Deregulated, and Full-Time Student",3,3.5 - 4.0,Yes,"Tuition/Education Expenses, Rent, Transportation, Sustainability/Stability of Income Sources",Family Support,1000 -1499,1000 - 1999
+Male,International Student,"Regulated, and Full-Time Student",4,3.0 - 3.49,Yes,"Tuition/Education Expenses, Rent, Food, Transportation",Family Support,1000 -1499,2000 - 2999
+Female,International Student,"Regulated, and Full-Time Student",4,3.5 - 4.0,Yes,"Tuition/Education Expenses, Rent","Family Support, Part-Time/Full-Time Job",1500 - 1999,1000 - 1999
+Male,International Student,"Deregulated, and Full-Time Student",4,3.0 - 3.49,No,"Tuition/Education Expenses, Rent, Transportation, Sustainability/Stability of Income Sources",Family Support,1500 - 1999,2000 - 2999
+Male,International Student,"Deregulated, and Full-Time Student",3,3.0 - 3.49,No,I am not experiencing financial stress,Family Support,1000 -1499,2000 - 2999
+Male,International Student,"Regulated, and Full-Time Student",2,2.5 - 2.99,No,I am not experiencing financial stress,Family Support,2500 - 2999,2000 - 2999
+Male,International Student,"Regulated, and Full-Time Student",4,2.0 - 2.49,Yes,"Tuition/Education Expenses, Rent, Food","Family Support, Savings/Investments",500 - 999,less than 1000
+Male,International Student,"Deregulated, and Full-Time Student",2,2.0 - 2.49,Yes,Rent,Part-Time/Full-Time Job,500 - 999,2000 - 2999
+Male,International Student,"Deregulated, and Full-Time Student",1,2.5 - 2.99,No,"Transportation, Medical Expenses, Sustainability/Stability of Income Sources",Family Support,1000 -1499,1000 - 1999
+Male,Domestic Student,"Regulated, and Full-Time Student",4,3.5 - 4.0,No,I am not experiencing financial stress,"Family Support, Scholarships, Loans/Lines of Credit (e.g. OSAP, bank loans, etc.)",3000 or higher,4000 or higher
+Female,Domestic Student,"Regulated, and Full-Time Student",3,2.5 - 2.99,No,I am not experiencing financial stress,"Family Support, Part-Time/Full-Time Job",500 - 999,1000 - 1999
+Male,International Student,"Deregulated, and Full-Time Student",3,2.5 - 2.99,Yes,"Tuition/Education Expenses, Rent",Family Support,2000 - 2499,2000 - 2999
+Male,Domestic Student,"Deregulated, and Full-Time Student",4,3.0 - 3.49,Yes,"Tuition/Education Expenses, Rent, Food","Family Support, Part-Time/Full-Time Job, Scholarships, Loans/Lines of Credit (e.g. OSAP, bank loans, etc.), Savings/Investments",500 - 999,less than 1000
+Male,Domestic Student,"Regulated, and Full-Time Student",3,2.5 - 2.99,Yes,"Tuition/Education Expenses, Rent, Food","Family Support, Loans/Lines of Credit (e.g. OSAP, bank loans, etc.)",500 - 999,less than 1000
+Male,International Student,"Deregulated, and Full-Time Student",3,3.0 - 3.49,No,I am not experiencing financial stress,Family Support,1000 -1499,2000 - 2999
+Female,International Student,"Deregulated, and Full-Time Student",4,3.5 - 4.0,Yes,"Tuition/Education Expenses, Rent","Family Support, Part-Time/Full-Time Job",1500 - 1999,1000 - 1999
+Female,Domestic Student,"Regulated, and Full-Time Student",3,3.0 - 3.49,No,I am not experiencing financial stress,"Family Support, Loans/Lines of Credit (e.g. OSAP, bank loans, etc.)",0 - 499,less than 1000
+Male,International Student,"Regulated, and Full-Time Student",3,3.0 - 3.49,Yes,"Rent, Food",Family Support,1500 - 1999,1000 - 1999
+Male,International Student,"Regulated, and Full-Time Student",3,3.0 - 3.49,Yes,"Tuition/Education Expenses, Rent, Food, Transportation, Medical Expenses, Sustainability/Stability of Income Sources","Family Support, Part-Time/Full-Time Job",500 - 999,1000 - 1999
+Female,International Student,"Deregulated, and Full-Time Student",3,3.5 - 4.0,Yes,"Tuition/Education Expenses, Rent, Food",Family Support,1000 -1499,less than 1000
+Female,Domestic Student,"Deregulated, and Full-Time Student",2,2.5 - 2.99,No,I am not experiencing financial stress,"Family Support, Savings/Investments",1000 -1499,2000 - 2999
+Male,International Student,"Deregulated, and Full-Time Student",4,3.5 - 4.0,Yes,"Tuition/Education Expenses, Food, Sustainability/Stability of Income Sources","Family Support, Savings/Investments",1500 - 1999,less than 1000
+Male,Domestic Student,"Deregulated, and Full-Time Student",4,2.5 - 2.99,No,I am not experiencing financial stress,Family Support,2500 - 2999,4000 or higher
+Female,International Student,"Regulated, and Full-Time Student",3,3.5 - 4.0,Yes,"Tuition/Education Expenses, Rent, Food",Family Support,500 - 999,less than 1000
+Male,International Student,"Deregulated, and Full-Time Student",3,2.5 - 2.99,No,I am not experiencing financial stress,Family Support,2000 - 2499,less than 1000
+Male,Domestic Student,"Regulated, and Full-Time Student",3,2.5 - 2.99,Yes,"Tuition/Education Expenses, Rent, Food, Transportation","Family Support, Loans/Lines of Credit (e.g. OSAP, bank loans, etc.), Savings/Investments",500 - 999,1000 - 1999
+Male,International Student,"Regulated, and Full-Time Student",4,2.5 - 2.99,Yes,"Tuition/Education Expenses, Rent, Food, Transportation, Sustainability/Stability of Income Sources","Family Support, Part-Time/Full-Time Job",500 - 999,1000 - 1999
+Female,Domestic Student,"Regulated, and Full-Time Student",4,2.5 - 2.99,Yes,"Tuition/Education Expenses, Transportation, Sustainability/Stability of Income Sources","Family Support, Part-Time/Full-Time Job, Loans/Lines of Credit (e.g. OSAP, bank loans, etc.)",0 - 499,less than 1000
+Male,Domestic Student,"Regulated, and Full-Time Student",4,3.5 - 4.0,Yes,"Tuition/Education Expenses, Rent, Food, Sustainability/Stability of Income Sources",Family Support,1000 -1499,less than 1000
+Female,International Student,"Regulated, and Full-Time Student",3,2.5 - 2.99,Yes,one class need 6000 Canada dollar,Family Support,1000 -1499,less than 1000
+Female,International Student,"Deregulated, and Full-Time Student",3,2.5 - 2.99,Yes,"Tuition/Education Expenses, Transportation","Family Support, Part-Time/Full-Time Job",1000 -1499,1000 - 1999
+Male,International Student,"Deregulated, and Full-Time Student",5,3.5 - 4.0,Yes,"Tuition/Education Expenses, Rent, Food, Transportation, Medical Expenses, Sustainability/Stability of Income Sources","Family Support, Part-Time/Full-Time Job, Scholarships, Loans/Lines of Credit (e.g. OSAP, bank loans, etc.), Savings/Investments",3000 or higher,4000 or higher
+Male,International Student,"Deregulated, and Full-Time Student",3,3.5 - 4.0,Yes,Tuition/Education Expenses,Family Support,2500 - 2999,4000 or higher
+Female,International Student,"Regulated, and Full-Time Student",4,3.0 - 3.49,No,I am not experiencing financial stress,Family Support,3000 or higher,3000 - 3999
+Female,International Student,"Deregulated, and Part-Time Student",2,2.5 - 2.99,Yes,Food,Scholarships,3000 or higher,2000 - 2999
+Female,International Student,"Regulated, and Full-Time Student",3,3.5 - 4.0,Yes,"Tuition/Education Expenses, Rent",Family Support,1500 - 1999,2000 - 2999
+Male,International Student,"Regulated, and Full-Time Student",4,2.0 - 2.49,No,Tuition/Education Expenses,Family Support,500 - 999,2000 - 2999
+Female,International Student,"Deregulated, and Full-Time Student",3,3.0 - 3.49,Yes,Tuition/Education Expenses,Family Support,500 - 999,1000 - 1999
+Female,Domestic Student,"Regulated, and Full-Time Student",4,2.0 - 2.49,Yes,"Tuition/Education Expenses, Rent, Food","Family Support, Part-Time/Full-Time Job",500 - 999,less than 1000

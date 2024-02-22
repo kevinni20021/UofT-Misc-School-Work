@@ -1,0 +1,565 @@
+---
+title: "Assignment 2 Report"
+output:
+  pdf_document: default
+  word_document: default
+  html_document: default
+fontsize: 10pt
+date: "2023-11-12"
+---
+
+```{r, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
+# packages
+library(tidyverse)
+library(readxl)
+library(caret)
+library(glmnet)
+set.seed(314)
+data = read_excel("~/Desktop/UofTears Code/STA314/A2/EMV_VIX_Data.xlsx")
+#split into different time periods
+tp1 <- data[1:102,]
+tp2 <- data[103:159,]
+tp3 <- data[160:216,]
+tp4 <- data[217:237,]
+tp5 <- data[238:360,]
+tp6 <- data[361:395,]
+#speed up my life
+l1 <-0.5582699
+l2 <- 2.435019
+l3 <- 0.9290849
+l4 <- 17.34995
+l5 <- 0.176641
+l6 <- 6.446584
+a1 <- 0.3272727
+a2 <- 0.2636364
+a3 <- 0.3909091
+a4 <- 0.1
+a5 <- 0.9636364
+a6 <- 0.1
+```
+
+```{r, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
+#OLS
+y <- data$VIX
+x <- data.matrix(data[-47][-1])
+ols <- glmnet(x,y,alpha=0, lambda = 0)
+ols.fit <- ols %>% predict(x) %>% as.vector()
+coef(ols)
+RMSE(ols.fit,y)
+ols$dev.ratio
+```
+
+```{r, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
+#Ridge
+y <- data$VIX
+x <- data.matrix(data[-47][-1])
+ridge.cv <- cv.glmnet(x,y,alpha=0, family ="gaussian", nfolds = 10, nlambda = 500, standarize = TRUE, type.measure = "mse")
+ridge <- glmnet(x,y,alpha=0,lambda=ridge.cv$lambda.min)
+ridge.fit <- ridge %>% predict(x) %>% as.vector()
+coef(ridge)
+RMSE(ridge.fit,y)
+ridge$dev.ratio
+```
+
+```{r, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
+#LASSO
+y <- data$VIX
+x <- data.matrix(data[-47][-1])
+lasso.cv <- cv.glmnet(x,y,alpha=1, family ="gaussian", nfolds = 10, nlambda = 500, standarize = TRUE, type.measure = "mse")
+lasso <- glmnet(x,y,alpha=1,lambda=lasso.cv$lambda.min)
+lasso.fit <- lasso %>% predict(x) %>% as.vector()
+coef(lasso)
+RMSE(lasso.fit,y)
+lasso$dev.ratio
+```
+
+```{r, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
+# Elastic Net finding optimal alpha and lambda
+y <- data$VIX
+x <- data.matrix(data[-47][-1])
+cv_method = trainControl(method = "cv", number = 10)
+init <- glmnet(x, y,
+             family = "gaussian",
+             nlambda = 100,
+             alpha = .5)
+lambda <- unique(init$lambda)
+lambda <- lambda[-c(1, length(lambda))]
+lambda <- lambda[1:min(length(lambda), 100)]
+lambda_grid <- seq(0, 1, 0.01)
+alpha_grid <- seq(0.7, 1, 0.001)
+srchGrid <- expand.grid(.alpha = alpha_grid, .lambda = lambda)
+elnet.train = train(
+  VIX ~., 
+    data = data[-1],
+    method = "glmnet",
+    tuneGrid = srchGrid,
+    preProcess = c("center", "scale"),
+  trControl = cv_method,
+    metric = "MSE"
+)
+```
+
+```{r, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
+# Elastic Net model
+elnet.train$bestTune$alpha
+elnet.train$bestTune$lambda
+elnet <- glmnet(x,y,alpha= elnet.train$bestTune$alpha, lambda = elnet.train$bestTune$lambda)
+elnet.fit <- elnet %>% predict(x) %>% as.vector
+coef(elnet)
+RMSE(elnet.fit, y)
+elnet$dev.ratio
+```
+
+```{r, echo=FALSE, results='hide', message=FALSE, warning=FALSE, eval=FALSE}
+for (t in 1:6) {
+    period = paste("tp",t,sep="")
+    alpha = paste("a",t,sep="")
+    lambda = paste("l",t,sep="")
+    hit_elnet = train(
+        VIX ~. -Date, 
+        data = eval(parse(text = period)),
+        method = "glmnet",
+        tuneLength = 100,
+        preProcess = c("center", "scale"),
+        trControl = trainControl(method = "cv", number = nrow(eval(parse(text = period))))
+    )
+    assign(alpha, hit_elnet$bestTune$alpha)
+    assign(lambda, hit_elnet$bestTune$lambda)
+}
+```
+
+```{r, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
+a1
+l1
+y <- tp1$VIX
+x <- data.matrix(tp1[-47][-1])
+model1 <- glmnet(x,y,alpha=a1, lambda = l1)
+coef(model1)
+model1$dev.ratio
+```
+
+```{r, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
+a2
+l2
+y <- tp2$VIX
+x <- data.matrix(tp2[-47][-1])
+model2 <- glmnet(x,y,alpha=a2, lambda = l2)
+coef(model2)
+model2$dev.ratio
+```
+```{r, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
+a3
+l3
+y <- tp3$VIX
+x <- data.matrix(tp3[-47][-1])
+model3 <- glmnet(x,y,alpha=a3, lambda = l3)
+coef(model3)
+model3$dev.ratio
+```
+```{r, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
+a4
+l4
+y <- tp4$VIX
+x <- data.matrix(tp4[-47][-1])
+model4 <- glmnet(x,y,alpha=a4, lambda = l4)
+coef(model4)
+model4$dev.ratio
+```
+```{r, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
+a5
+l5
+y <- tp5$VIX
+x <- data.matrix(tp5[-47][-1])
+model5 <- glmnet(x,y,alpha=a5, lambda = l5)
+coef(model5)
+model5$dev.ratio
+```
+```{r, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
+a6
+l6
+y <- tp6$VIX
+x <- data.matrix(tp6[-47][-1])
+model6 <- glmnet(x,y,alpha=a6, lambda = l6)
+coef(model6)
+model6$dev.ratio
+```
+
+# Overall Market from 1990 - 2022
+
+We used 4 different methods to extract information about the predictors for the overall market. The methods are OLS, Ridge regression, LASSO and elastic nets. 
+
+## Models
+``` {r, echo=FALSE, message=FALSE, warning=FALSE}
+ols.data <- c(RMSE(ols.fit,y), ols$dev.ratio)
+ridge.data <- c(RMSE(ridge.fit, y), ridge$dev.ratio)
+LASSO.data <- c(RMSE(lasso.fit, y), lasso$dev.ratio)
+enet.data <- c(RMSE(elnet.fit, y), elnet$dev.ratio)
+findings <- cbind(ols.data, ridge.data, LASSO.data, enet.data)
+colnames(findings) <- c("OLS", "Ridge", "LASSO", "Elastic Net")
+rownames(findings) <- c("RMSE", "R-Squared")
+as.table(findings)
+```
+
+## Models Discussion
+
+OLS suffers from multicollinearity and fails to do feature selection. It will generally result in high RMSE and is not very good at prediction. However, OLS is unbiased and is very good when you have already done feature selection and got rid of multicolinear variables.
+
+LASSO can perform feature selection and introduce sparsity but suffers from multicolinearity. It is also unknown why LASSO will choose a certain feature over another when 2 variables have high correlation. It is very good when there are very few, high leverage predictors.
+
+Ridge Regression take care of multicolinearity but fails to do feature selection leading to a higher RMSE when there are only a few features that contribute to predicting the data It is very good when all features are useful in predicting the data.
+
+Elastic Net combines LASSO and Ridge, providing a balance between feature selection and multicollinearity handling. However, it is very difficult to find optimal alpha and lambda values. Hence, it is time consuming and resource costly.
+
+## Findings
+
+Lowest RMSE is OLS but the model suffers from multicollinearity, hence a better model would be the elastic net.
+
+Overall, it is very difficult to provide a coherent picture as most model has low determination coefficient and have major problems. In addition, the data is heterogenous meaning some factors that are very important to a certain time period may not be important to other time periods. However, by using feature selection and domain knowledge we can infer some general results.
+``` {r, echo=FALSE, message=FALSE, warning=FALSE}
+coefficients <- coef(elnet)
+sorted_indices <- order(abs(coefficients[-1]), decreasing = TRUE)
+sorted_coefficients <- coefficients[-1][sorted_indices]
+top_indices <- sorted_indices[1:5]
+predictor_names <- colnames(data)[-1]
+top_predictors <- predictor_names[top_indices]
+Predictor <- c(top_predictors[1:5])
+Weight<- c(sorted_coefficients[1:5])
+result = cbind(Predictor,Weight)
+rownames(result) = seq(1,5,1)
+as.table(result)
+```
+Labor disputes have the highest positive impact on VIX. Meaning as these EMV’s increase, VIX also increases hence more fear in the stock market. Labour disputes generally means potential strikes hence cause fear. 
+
+On the other hand, Agricultural Policy has the highest negative impact. I hypothesize that when newspapers talk about agricultural policy, there is nothing more urgent going on which leads to more market stability.
+
+# Different Market Time Periods
+
+## 1990/01 - 1998/06
+
+``` {r, echo=FALSE, message=FALSE, warning=FALSE}
+coefficients <- coef(model1)
+sorted_indices <- order(abs(coefficients[-1]), decreasing = TRUE)
+sorted_coefficients <- coefficients[-1][sorted_indices]
+top_indices <- sorted_indices[1:5]
+predictor_names <- colnames(data)[-1]
+top_predictors <- predictor_names[top_indices]
+Predictor <- c(top_predictors[1:5])
+Weight<- c(sorted_coefficients[1:5])
+result = cbind(Predictor,Weight)
+rownames(result) = seq(1,5,1)
+as.table(result)
+```
+
+During this period of general stability, there are many predictors that impact VIX negatively. Interestingly, due to the gulf war, the petroleum markets EMV tracker has a decent amount of weight for predicting VIX.
+
+## 1998/07 - 2003/03
+
+``` {r, echo=FALSE, message=FALSE, warning=FALSE}
+coefficients <- coef(model2)
+sorted_indices <- order(abs(coefficients[-1]), decreasing = TRUE)
+sorted_coefficients <- coefficients[-1][sorted_indices]
+top_indices <- sorted_indices[1:5]
+predictor_names <- colnames(data)[-1]
+top_predictors <- predictor_names[top_indices]
+Predictor <- c(top_predictors[1:5])
+Weight<- c(sorted_coefficients[1:5])
+result = cbind(Predictor,Weight)
+rownames(result) = seq(1,5,1)
+as.table(result)
+```
+
+During this time of market volatility, there are no significant factors that contribute to VIX negatively. All features selected by the elastic net model have a positive impact on VIX. Housing and land management is among those those significant factors as the housing market at this point is experiencing a downturn.
+
+## 2003/04 - 2007/12
+
+``` {r, echo=FALSE, message=FALSE, warning=FALSE}
+coefficients <- coef(model3)
+sorted_indices <- order(abs(coefficients[-1]), decreasing = TRUE)
+sorted_coefficients <- coefficients[-1][sorted_indices]
+top_indices <- sorted_indices[1:5]
+predictor_names <- colnames(data)[-1]
+top_predictors <- predictor_names[top_indices]
+Predictor <- c(top_predictors[1:5])
+Weight<- c(sorted_coefficients[1:5])
+result = cbind(Predictor,Weight)
+rownames(result) = seq(1,5,1)
+as.table(result)
+```
+
+
+## 2008/01 - 2009/09
+
+``` {r, echo=FALSE, message=FALSE, warning=FALSE}
+coefficients <- coef(model4)
+sorted_indices <- order(abs(coefficients[-1]), decreasing = TRUE)
+sorted_coefficients <- coefficients[-1][sorted_indices]
+top_indices <- sorted_indices[1:5]
+predictor_names <- colnames(data)[-1]
+top_predictors <- predictor_names[top_indices]
+Predictor <- c(top_predictors[1:5])
+Weight<- c(sorted_coefficients[1:5])
+result = cbind(Predictor,Weight)
+rownames(result) = seq(1,5,1)
+as.table(result)
+```
+
+2008 was one of the worst financial crashes in history and the predictors reflect that since many people lost their jobs and international trade was very difficult to conduct due to the poor economies.
+
+## 2009/10 - 2019/12
+
+``` {r, echo=FALSE, message=FALSE, warning=FALSE}
+coefficients <- coef(model5)
+sorted_indices <- order(abs(coefficients[-1]), decreasing = TRUE)
+sorted_coefficients <- coefficients[-1][sorted_indices]
+top_indices <- sorted_indices[1:5]
+predictor_names <- colnames(data)[-1]
+top_predictors <- predictor_names[top_indices]
+Predictor <- c(top_predictors[1:5])
+Weight<- c(sorted_coefficients[1:5])
+result = cbind(Predictor,Weight)
+rownames(result) = seq(1,5,1)
+as.table(result)
+```
+
+During this long period of economic prosperity, immigration was high as many people moved to the US in search of a better life. In addition, since there is not much market volatility and significant world events, agricultural policy was often reported thus leading to its negative correlation. Infectious disease at this point is actually a negative predictor for VIX which is very interesting as COVID-19 heavily impacts the market in the next segment.
+
+## 2020/01 - 2022/12
+
+``` {r, echo=FALSE, message=FALSE, warning=FALSE}
+coefficients <- coef(model6)
+sorted_indices <- order(abs(coefficients[-1]), decreasing = TRUE)
+sorted_coefficients <- coefficients[-1][sorted_indices]
+top_indices <- sorted_indices[1:5]
+predictor_names <- colnames(data)[-1]
+top_predictors <- predictor_names[top_indices]
+Predictor <- c(top_predictors[1:5])
+Weight<- c(sorted_coefficients[1:5])
+result = cbind(Predictor,Weight)
+rownames(result) = seq(1,5,1)
+as.table(result)
+```
+
+Interestingly, infectious disease is not a major predictor during the COVID-19 economic crisis. I believe that is because it is too highly correlated with rest of the predictors especially since it was highly politicized in a very controversial election in the US.
+
+## Findings
+
+By inspecting some of the results that is in the Appendix B, I have noticed a few things between periods of high volatility and low volatility. In periods of high volatility, there is usually close to 0 features that is negatively related to VIX. In general Another thing I noticed is that labor related features are always very significant. I believe this is due to the frequent mentioning of unemployment rates by newspapers and the media in general. 
+
+# General Conclusion and findings
+
+In general, it is very difficult to predict the market. Many of the models created have around 50% - 60% determination coefficient even when using data that is homogeneous. However, we can still extract valuable information from our models. The features extracted are usually a good indicator of what was actually heavily impacting the market at that period of time.
+
+# Appendix A: Code
+
+```{r, message=FALSE, warning=FALSE, eval=FALSE}
+# packages
+library(tidyverse)
+library(readxl)
+library(caret)
+library(glmnet)
+set.seed(314)
+data = read_excel("~/Desktop/UofTears Code/STA314/A2/EMV_VIX_Data.xlsx")
+#split into different time periods
+tp1 <- data[1:102,]
+tp2 <- data[103:159,]
+tp3 <- data[160:216,]
+tp4 <- data[217:237,]
+tp5 <- data[238:360,]
+tp6 <- data[361:395,]
+```
+
+```{r, message=FALSE, warning=FALSE, eval=FALSE}
+#OLS
+y <- data$VIX
+x <- data.matrix(data[-47][-1])
+ols <- glmnet(x,y,alpha=0, lambda = 0)
+ols.fit <- ols %>% predict(x) %>% as.vector()
+coef(ols)
+RMSE(ols.fit,y)
+ols$dev.ratio
+```
+
+```{r, message=FALSE, warning=FALSE, eval=FALSE}
+#Ridge
+y <- data$VIX
+x <- data.matrix(data[-47][-1])
+ridge.cv <- cv.glmnet(x,y,alpha=0, family ="gaussian", nfolds = 10, nlambda = 500, standarize = TRUE, type.measure = "mse")
+ridge <- glmnet(x,y,alpha=0,lambda=ridge.cv$lambda.min)
+ridge.fit <- ridge %>% predict(x) %>% as.vector()
+coef(ridge)
+RMSE(ridge.fit,y)
+ridge$dev.ratio
+```
+
+```{r, message=FALSE, warning=FALSE, eval=FALSE}
+#LASSO
+y <- data$VIX
+x <- data.matrix(data[-47][-1])
+lasso.cv <- cv.glmnet(x,y,alpha=1, family ="gaussian", nfolds = 10, nlambda = 500, standarize = TRUE, type.measure = "mse")
+lasso <- glmnet(x,y,alpha=1,lambda=lasso.cv$lambda.min)
+lasso.fit <- lasso %>% predict(x) %>% as.vector()
+coef(lasso)
+RMSE(lasso.fit,y)
+lasso$dev.ratio
+```
+
+```{r, message=FALSE, warning=FALSE, eval=FALSE}
+# Elastic Net finding optimal alpha and lambda
+y <- data$VIX
+x <- data.matrix(data[-47][-1])
+cv_method = trainControl(method = "cv", number = 10)
+init <- glmnet(x, y,
+             family = "gaussian",
+             nlambda = 100,
+             alpha = .5)
+lambda <- unique(init$lambda)
+lambda <- lambda[-c(1, length(lambda))]
+lambda <- lambda[1:min(length(lambda), 100)]
+lambda_grid <- seq(0, 1, 0.01)
+alpha_grid <- seq(0, 1, 0.001)
+srchGrid <- expand.grid(.alpha = alpha_grid, .lambda = lambda)
+elnet.train = train(
+  VIX ~., 
+    data = data[-1],
+    method = "glmnet",
+    tuneGrid = srchGrid,
+    preProcess = c("center", "scale"),
+  trControl = cv_method,
+    metric = "MSE"
+)
+```
+
+```{r,  message=FALSE, warning=FALSE, eval=FALSE}
+# Elastic Net model
+elnet.train$bestTune$alpha
+elnet.train$bestTune$lambda
+elnet <- glmnet(x,y,alpha= elnet.train$bestTune$alpha, lambda = elnet.train$bestTune$lambda)
+elnet.fit <- elnet %>% predict(x) %>% as.vector
+coef(elnet)
+RMSE(elnet.fit, y)
+elnet$dev.ratio
+```
+
+```{r, message=FALSE, warning=FALSE, eval=FALSE}
+# Phase 2 finding elastic net model for each time period
+for (t in 1:6) {
+    period = paste("tp",t,sep="")
+    alpha = paste("a",t,sep="")
+    lambda = paste("l",t,sep="")
+    hit_elnet = train(
+        VIX ~. -Date, 
+        data = eval(parse(text = period)),
+        method = "glmnet",
+        tuneLength = 100,
+        preProcess = c("center", "scale"),
+        trControl = trainControl(method = "cv", number = nrow(eval(parse(text = period))))
+    )
+    assign(alpha, hit_elnet$bestTune$alpha)
+    assign(lambda, hit_elnet$bestTune$lambda)
+}
+```
+
+# Appendix B: Phase 2 Individual Model Diagonistics + Coefficients
+
+```{r, message=FALSE, warning=FALSE}
+# Phase 2 finding elastic net model for each time period
+a1
+l1
+y <- tp1$VIX
+x <- data.matrix(tp1[-47][-1])
+model1 <- glmnet(x,y,alpha=a1, lambda = l1)
+coef(model1)
+model1$dev.ratio
+```
+```{r, message=FALSE, warning=FALSE}
+a2
+l2
+y <- tp2$VIX
+x <- data.matrix(tp2[-47][-1])
+model2 <- glmnet(x,y,alpha=a2, lambda = l2)
+coef(model2)
+model2$dev.ratio
+```
+```{r, message=FALSE, warning=FALSE}
+a3
+l3
+y <- tp3$VIX
+x <- data.matrix(tp3[-47][-1])
+model3 <- glmnet(x,y,alpha=a3, lambda = l3)
+coef(model3)
+model3$dev.ratio
+```
+```{r,  message=FALSE, warning=FALSE}
+a4
+l4
+y <- tp4$VIX
+x <- data.matrix(tp4[-47][-1])
+model4 <- glmnet(x,y,alpha=a4, lambda = l4)
+coef(model4)
+model4$dev.ratio
+```
+```{r,message=FALSE, warning=FALSE}
+a5
+l5
+y <- tp5$VIX
+x <- data.matrix(tp5[-47][-1])
+model5 <- glmnet(x,y,alpha=a5, lambda = l5)
+coef(model5)
+model5$dev.ratio
+```
+```{r, message=FALSE, warning=FALSE}
+a6
+l6
+y <- tp6$VIX
+x <- data.matrix(tp6[-47][-1])
+model6 <- glmnet(x,y,alpha=a6, lambda = l6)
+coef(model6)
+model6$dev.ratio
+```
+
+# Appendix C: Tables of Coefficients for Phase 1
+
+```{r}
+coef(ols)
+```
+```{r}
+coef(ridge)
+plot(ridge.cv)
+```
+```{r}
+coef(lasso)
+plot(lasso.cv)
+```
+
+# Appendix D: Table Generation Code
+
+## Phase 1
+
+``` {r, message=FALSE, warning=FALSE, eval=FALSE}
+ols.data <- c(RMSE(ols.fit,y), ols$dev.ratio)
+ridge.data <- c(RMSE(ridge.fit, y), ridge$dev.ratio)
+LASSO.data <- c(RMSE(lasso.fit, y), lasso$dev.ratio)
+enet.data <- c(RMSE(elnet.fit, y), elnet$dev.ratio)
+findings <- cbind(ols.data, ridge.data, LASSO.data, enet.data)
+colnames(findings) <- c("OLS", "Ridge", "LASSO", "Elastic Net")
+rownames(findings) <- c("RMSE", "R-Squared")
+as.table(findings)
+```
+
+## Phase 2
+
+``` {r, message=FALSE, warning=FALSE, eval=FALSE}
+#change model1 to model2 for table code for model2 and onwards
+coefficients <- coef(model1)
+sorted_indices <- order(abs(coefficients[-1]), decreasing = TRUE)
+sorted_coefficients <- coefficients[-1][sorted_indices]
+top_indices <- sorted_indices[1:5]
+predictor_names <- colnames(data)[-1]
+top_predictors <- predictor_names[top_indices]
+Predictor <- c(top_predictors[1:5])
+Weight<- c(sorted_coefficients[1:5])
+result = cbind(Predictor,Weight)
+rownames(result) = seq(1,5,1)
+as.table(result)
+
+```
